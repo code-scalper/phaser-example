@@ -18,6 +18,26 @@
       "dude": {
         "file": "dude.png",
         "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
+      },
+      "character1Dude": {
+        "file": "character1.png",
+        "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
+      },
+      "character2Dude": {
+        "file": "character2.png",
+        "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
+      },
+      "character3Dude": {
+        "file": "character3.png",
+        "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
+      },
+      "character4Dude": {
+        "file": "character4.png",
+        "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
+      },
+      "character5Dude": {
+        "file": "character5.png",
+        "frameConfig": { "frameWidth": 32, "frameHeight": 48 }
       }
     }
   }
