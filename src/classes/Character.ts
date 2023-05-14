@@ -16,30 +16,32 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, key);
     scene.add.existing(this, true);
     scene.physics.add.existing(this);
-    this.characterName = name;
-    this.moveSpeed = 200;
-    this.scene = scene;
+    // this.characterName = name;
+    // this.moveSpeed = 200;
+    console.log(this, "charater");
     this.setName(name);
     this.setCollideWorldBounds(true);
-    this.setImmovable(true);
+    console.log(this, "this", typeof Character);
+    this.body.setOffset(0, 15);
+    // this.setImmovable(true);
     this.setBounce(0.2);
     this.setTexture("dude");
-    GatheringStarsScene.group.add(this);
+    // GatheringStarsScene.group.add(this);
     scene.physics.add.collider(this, GatheringStarsScene.staticGroup);
 
-    console.log(GatheringStarsScene.group, "this");
-    scene.physics.add.overlap(
-      this,
-      GatheringStarsScene.group,
-      this.onOverlap,
-      null,
-      this
-    );
+    // console.log(GatheringStarsScene.group, "this");
+    // scene.physics.add.overlap(
+    //   this,
+    //   GatheringStarsScene.group,
+    //   this.onOverlap,
+    //   null,
+    //   this
+    // );
 
-    this.previous = { x: this.x, y: this.y };
-    this.degree = 0;
-    this.state = "idle";
-    this.target = new Phaser.Math.Vector2();
+    // this.previous = { x: this.x, y: this.y };
+    // this.degree = 0;
+    // // this.state = "idle";
+    // this.target = new Phaser.Math.Vector2();
 
     // this.on(
     //   Phaser.Animations.Events.ANIMATION_UPDATE,
@@ -54,8 +56,8 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     //   this
     // );
 
-    EMITTER.on("pointerUp", this.onPointerup, this);
-    EMITTER.on("pointerDrag", this.onPointerDrag, this);
+    // EMITTER.on("pointerUp", this.onPointerup, this);
+    // EMITTER.on("pointerDrag", this.onPointerDrag, this);
 
     // const table_frames = [
     //   ["idle_", [1]],
@@ -116,6 +118,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
   }
 
   moveTo(x, y) {
+    console.log("x, y", x, y);
     this.target.x = x;
     this.target.y = y;
     this.scene.physics.moveToObject(this, this.target, this.moveSpeed);

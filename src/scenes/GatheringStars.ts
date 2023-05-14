@@ -27,7 +27,7 @@ export default class GatheringStarsScene extends Scene {
   }
 
   create(): void {
-    this.cameras.main.setBounds(0, 0, 3200, 600).setName("main");
+    // this.cameras.main.setBounds(0, 0, 3200, 600).setName("main");
     GatheringStarsScene.group = this.physics.add.group();
     GatheringStarsScene.staticGroup = this.physics.add.staticGroup();
     GatheringStarsScene.graphics = this.add.graphics();
@@ -39,8 +39,12 @@ export default class GatheringStarsScene extends Scene {
     });
     // platform
     this.createPlatforms();
-
-    new Dude(this, 350, 350, "GatheringStarsScene", "player1").setVelocityX(1);
+    const player = this.physics.add.sprite(100, 400, `dude`).setName("dude");
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(true);
+    console.log(player, "player");
+    this.physics.add.collider(player, GatheringStarsScene.staticGroup);
+    new Dude(this, 200, 400, "GatheringStarsScene", "player1");
 
     // this.screenText = this.add
     //   .text(400, 550, "Press SPACE to start!")
