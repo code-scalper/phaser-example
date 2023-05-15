@@ -1,5 +1,5 @@
-import GatheringStarsScene from "../scenes/GatheringStars";
-import { EMITTER } from "../lib/Common";
+import GatheringStarsScene from "../../scenes/GatheringStars";
+import { EMITTER } from "../../lib/Common";
 
 interface Position {
   x: number;
@@ -11,22 +11,19 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
   private degree: number = 0;
   private target: any;
   private characterName: string;
-
   constructor(scene, x, y, key, name) {
     super(scene, x, y, key);
     scene.add.existing(this, true);
     scene.physics.add.existing(this);
     // this.characterName = name;
     // this.moveSpeed = 200;
-    console.log(this, "charater");
     this.setName(name);
     this.setCollideWorldBounds(true);
-    console.log(this, "this", typeof Character);
     this.body.setOffset(0, 15);
     // this.setImmovable(true);
     this.setBounce(0.2);
     this.setTexture("dude");
-    // GatheringStarsScene.group.add(this);
+    GatheringStarsScene.group.add(this);
     scene.physics.add.collider(this, GatheringStarsScene.staticGroup);
 
     // console.log(GatheringStarsScene.group, "this");
@@ -77,56 +74,56 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
   onPointerup(pointer) {}
   onPointerDrag(pointer) {}
 
-  makeAnimation(table_frames) {
-    const angle_chunk = 22.5;
-    const frames_chunk = 9;
-    for (var i = 0; i < table_frames.length; i++) {
-      var start_frame = 0;
-      for (var j = 0; j <= 360 / 2; j += angle_chunk) {
-        var frames = new Array();
-        for (var k = 0; k < table_frames[i][1].length; k++) {
-          frames.push(table_frames[i][1][k] + start_frame);
-        }
-        start_frame += 1;
-        this.anims.create({
-          key: table_frames[i][0] + j,
-          frames: this.anims.generateFrameNumbers("dude", { frames: frames }),
-          frameRate: 10,
-          repeat: table_frames[i][1].length == 1 ? 1 : -1,
-        });
-      }
-    }
-  }
+  // makeAnimation(table_frames) {
+  //   const angle_chunk = 22.5;
+  //   const frames_chunk = 9;
+  //   for (var i = 0; i < table_frames.length; i++) {
+  //     var start_frame = 0;
+  //     for (var j = 0; j <= 360 / 2; j += angle_chunk) {
+  //       var frames = new Array();
+  //       for (var k = 0; k < table_frames[i][1].length; k++) {
+  //         frames.push(table_frames[i][1][k] + start_frame);
+  //       }
+  //       start_frame += 1;
+  //       this.anims.create({
+  //         key: table_frames[i][0] + j,
+  //         frames: this.anims.generateFrameNumbers("dude", { frames: frames }),
+  //         frameRate: 10,
+  //         repeat: table_frames[i][1].length == 1 ? 1 : -1,
+  //       });
+  //     }
+  //   }
+  // }
 
-  getAngle(p1: Position, p2: Position) {
-    if (p1.x === p2.x && p1.y === p2.y) return this.degree;
-    var angle = Phaser.Math.Angle.Between(p1.x, p1.y, p2.x, p2.y);
-    var reverseAngle = Phaser.Math.Angle.Reverse(angle + Math.PI / 2);
-    var degree = Math.round(Phaser.Math.RadToDeg(reverseAngle));
-    degree = degree - (degree % 22.5);
-    if (degree > 180) {
-      this.setFlipX(true);
-      degree = 180 - (degree - 180);
-    } else this.setFlipX(false);
-    return degree;
-  }
+  // getAngle(p1: Position, p2: Position) {
+  //   if (p1.x === p2.x && p1.y === p2.y) return this.degree;
+  //   var angle = Phaser.Math.Angle.Between(p1.x, p1.y, p2.x, p2.y);
+  //   var reverseAngle = Phaser.Math.Angle.Reverse(angle + Math.PI / 2);
+  //   var degree = Math.round(Phaser.Math.RadToDeg(reverseAngle));
+  //   degree = degree - (degree % 22.5);
+  //   if (degree > 180) {
+  //     this.setFlipX(true);
+  //     degree = 180 - (degree - 180);
+  //   } else this.setFlipX(false);
+  //   return degree;
+  // }
 
-  setState(key: string | number) {
-    this.state = key;
-    this.play(key + "_" + this.degree);
-    return this;
-  }
+  // setState(key: string | number) {
+  //   this.state = key;
+  //   this.play(key + "_" + this.degree);
+  //   return this;
+  // }
 
-  moveTo(x, y) {
-    console.log("x, y", x, y);
-    this.target.x = x;
-    this.target.y = y;
-    this.scene.physics.moveToObject(this, this.target, this.moveSpeed);
-  }
+  // moveTo(x, y) {
+  //   console.log("x, y", x, y);
+  //   this.target.x = x;
+  //   this.target.y = y;
+  //   this.scene.physics.moveToObject(this, this.target, this.moveSpeed);
+  // }
 
-  getDirFromAngle() {
-    var tx = Math.cos(this.degree);
-    var ty = Math.sin(this.degree);
-    return { tx, ty };
-  }
+  // getDirFromAngle() {
+  //   var tx = Math.cos(this.degree);
+  //   var ty = Math.sin(this.degree);
+  //   return { tx, ty };
+  // }
 }

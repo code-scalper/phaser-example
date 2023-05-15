@@ -3,7 +3,7 @@ import { ImageInterface } from "../lib/interfaces";
 import { joinGameRoom, updateGameRoom } from "../socket";
 import TweenHelper from "../lib/TweenHelper";
 const InitialImages: ImageInterface[] = [
-  { x: 400, y: 300, name: "sky" },
+  { x: 400, y: 300, key: "sky" },
   //  { x: 400, y: 300, name: "star" },
 ];
 const DIRECTION_SETTING: any = {
@@ -37,8 +37,8 @@ export class GatheringStars extends Scene {
     joinGameRoom(this);
     // image
     InitialImages.forEach((image): void => {
-      const { x, y, name } = image;
-      this.createImage(x, y, name);
+      const { x, y, key } = image;
+      this.createImage(x, y, key);
     });
 
     // platform

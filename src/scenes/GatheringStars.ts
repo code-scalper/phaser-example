@@ -1,25 +1,27 @@
 import { Scene } from "phaser";
 import { ImageInterface } from "../lib/interfaces";
-import { joinGameRoom, updateGameRoom } from "../socket";
-import TweenHelper from "../lib/TweenHelper";
-import Dude from "../classes/Dude";
-const InitialImages: ImageInterface[] = [
-  { x: 400, y: 300, name: "sky" },
+// import { joinGameRoom, updateGameRoom } from "../socket";
+
+import { Dude, Platforms, Images, Text, Stars, ScoreText } from "../classes";
+const INITIAL_IMAGES: ImageInterface[] = [
+  { x: 400, y: 300, key: "sky" },
   //  { x: 400, y: 300, name: "star" },
 ];
-const DIRECTION_SETTING: any = {
-  up: { action: "y", val: -250, turn: "" },
-  left: { action: "x", val: -160, turn: "left" },
-  right: { action: "x", val: 160, turn: "right" },
-  down: { action: "y", val: 160, turn: "face" },
-};
+const INITIAL_PLATFORMS = [
+  { x: 400, y: 568, key: "ground", scale: 2, refresh: true },
+  { x: 600, y: 400, key: "ground" },
+  { x: 50, y: 250, key: "ground" },
+  { x: 750, y: 220, key: "ground" },
+];
 
 export default class GatheringStarsScene extends Scene {
   static group;
   static staticGroup;
   static graphics;
-  private platforms;
-  private key;
+  startText;
+  stars;
+  cursors;
+  player;
   constructor() {
     super({
       key: "GatheringStarsScene",
@@ -32,26 +34,41 @@ export default class GatheringStarsScene extends Scene {
     GatheringStarsScene.staticGroup = this.physics.add.staticGroup();
     GatheringStarsScene.graphics = this.add.graphics();
 
-    // image
-    InitialImages.forEach((image): void => {
-      const { x, y, name } = image;
-      this.createImage(x, y, name);
-    });
-    // platform
-    this.createPlatforms();
-    const player = this.physics.add.sprite(100, 400, `dude`).setName("dude");
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-    console.log(player, "player");
-    this.physics.add.collider(player, GatheringStarsScene.staticGroup);
-    new Dude(this, 200, 400, "GatheringStarsScene", "player1");
+    // create background
+    new Images(this, INITIAL_IMAGES);
 
-    // this.screenText = this.add
-    //   .text(400, 550, "Press SPACE to start!")
-    //   .setOrigin(0.5);
-    // TweenHelper.flashElement(this, this.screenText);
+    // create ground
+    new Platforms(GatheringStarsScene.staticGroup, INITIAL_PLATFORMS);
 
-    // this.jump = 0;
+    // create start text
+    const textOption = {
+      prop: "startText",
+      text: "Press Space to start!",
+      x: 400,
+      y: 550,
+      blink: true,
+      origin: 0.5,
+    };
+    new Text(this, textOption);
+
+    // create player
+    this.player = new Dude(
+      this,
+      200,
+      400,
+      "GatheringStarsScene",
+      "character1Dude"
+    );
+
+    // score text
+    const scoreTextOption = {
+      prop: "scoreText",
+      text: "Score: 0",
+      x: 16,
+      y: 16,
+      style: { fontSize: "32px", backgroundColor: "#000" },
+    };
+    new ScoreText(this, scoreTextOption);
 
     // // score
     // this.data.set("score", 0);
@@ -62,78 +79,32 @@ export default class GatheringStarsScene extends Scene {
     // // create bomb
     // this.createBomb();
 
-    // this.input.keyboard.on("keydown", (e: any, obj: any) =>
-    //   this.handlePress(e, obj)
-    // );
+    // events
+    this.input.keyboard.on("keydown", (e: any, obj: any) =>
+      this.handlePress(e, obj)
+    );
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update(): void {
-    // this.getMove();
+    this.player.getMove(this);
   }
-  createImage(centerX: number, centerY: number, name: string): void {
-    this.add.image(centerX, centerY, name);
+  handlePress(e, object) {
+    // console.log(e, object);
+    if (e.code === "Space") {
+      const option = {
+        name: "stars",
+        key: "star",
+        repeat: 11,
+        x: 12,
+        y: 0,
+        stepX: 70,
+        stepY: 0,
+      };
+      new Stars(this, option, GatheringStarsScene.staticGroup);
+      this.startText.setVisible(false);
+    }
   }
-  createPlatforms(): void {
-    GatheringStarsScene.staticGroup
-      .create(400, 568, "ground")
-      .setScale(2)
-      .refreshBody();
-    GatheringStarsScene.staticGroup.create(600, 400, "ground");
-    GatheringStarsScene.staticGroup.create(50, 250, "ground");
-    GatheringStarsScene.staticGroup.create(750, 220, "ground");
-  }
-  // handlePress(e, object) {
-  //   console.log(e, object);
-  //   if (e.code === "Space") {
-  //     this.createStars();
-  //     this.setColliderStars();
-  //     this.screenText.setVisible(false);
-  //   }
-  // }
-
-  // getMove() {
-  //   if (this.playerId === "") return;
-  //   if (this.player === null) return;
-  //   if (!this.cursors) return;
-  //   if (this.players.length === 0) return;
-  //   const { down, left, right, up } = this.cursors;
-
-  //   let isActive = false;
-  //   console.log(this.player, "player!!!");
-  //   for (const [key, value] of Object.entries({ down, left, right, up })) {
-  //     if (value.isDown) {
-  //       if (DIRECTION_SETTING[key].action === "x") {
-  //         this.player.setVelocityX(DIRECTION_SETTING[key].val);
-  //         this.player.anims.play(DIRECTION_SETTING[key].turn, true);
-  //       }
-  //       if (
-  //         this.player.body.touching.down &&
-  //         DIRECTION_SETTING[key].action === "y"
-  //       ) {
-  //         this.jump = 1;
-  //         this.player.setVelocityY(DIRECTION_SETTING[key].val);
-  //         if (this.player.anims && DIRECTION_SETTING[key].turn) {
-  //           this.player.anims.play(DIRECTION_SETTING[key].turn);
-  //         }
-  //         this.isReadyJump = false;
-  //       }
-  //       if (this.jump === 1 && key === "up" && this.isReadyJump) {
-  //         console.log(this.jump, key, this.isReadyJump);
-  //         this.player.setVelocityY(DIRECTION_SETTING[key].val);
-  //         this.jump = 0;
-  //         this.isReadyJump = false;
-  //       }
-  //       isActive = true;
-  //     }
-  //     if (key === "up" && value.isUp) {
-  //       this.isReadyJump = true;
-  //     }
-  //   }
-  //   if (isActive === false) {
-  //     this.player.setVelocityX(0);
-  //     this.player.anims.play("face");
-  //   }
-  // }
 
   // createBomb(): void {
   //   this.bombs = this.physics.add.group();
@@ -256,26 +227,5 @@ export default class GatheringStarsScene extends Scene {
   //   // });
 
   //   // console.log(this.players, "players");
-  // }
-  // createAnims(name: string): void {
-  //   this.anims.create({
-  //     key: "left",
-  //     frames: this.anims.generateFrameNumbers(name, { start: 0, end: 3 }),
-  //     frameRate: 10,
-  //     repeat: -1,
-  //   });
-
-  //   this.anims.create({
-  //     key: "face",
-  //     frames: [{ key: name, frame: 4 }],
-  //     frameRate: 20,
-  //   });
-
-  //   this.anims.create({
-  //     key: "right",
-  //     frames: this.anims.generateFrameNumbers(name, { start: 5, end: 8 }),
-  //     frameRate: 10,
-  //     repeat: -1,
-  //   });
   // }
 }

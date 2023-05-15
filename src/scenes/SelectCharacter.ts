@@ -4,11 +4,11 @@ import { ImageInterface } from "../lib/interfaces";
 import { createSocket } from "../socket";
 
 const InitialImages: ImageInterface[] = [
-  { x: 200, y: 200, name: "character1" },
-  { x: 400, y: 200, name: "character2" },
-  { x: 600, y: 200, name: "character3" },
-  { x: 300, y: 400, name: "character4" },
-  { x: 500, y: 400, name: "character5" },
+  { x: 200, y: 200, key: "character1" },
+  { x: 400, y: 200, key: "character2" },
+  { x: 600, y: 200, key: "character3" },
+  { x: 300, y: 400, key: "character4" },
+  { x: 500, y: 400, key: "character5" },
 ];
 
 export class SelectCharacter extends Scene {
@@ -36,8 +36,8 @@ export class SelectCharacter extends Scene {
 
     // image
     InitialImages.forEach((image): void => {
-      const { x, y, name } = image;
-      this.createImage(x, y, name);
+      const { x, y, key } = image;
+      this.createImage(x, y, key);
     });
     console.log(this.images, "images");
     this.input.on("gameobjectdown", (e: any, obj: any) =>
