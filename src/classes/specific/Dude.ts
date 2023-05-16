@@ -17,8 +17,6 @@ export default class Dude extends Character {
     this.scene = scene;
     this.name = name;
     this.createAnims(scene, name);
-
-    scene.createScoreText(name);
   }
 
   getUserMove(option, character) {
@@ -32,7 +30,7 @@ export default class Dude extends Character {
     }
     if (!active) {
       character.setVelocityX(0);
-      this.anims.play(`${playerId}Dude-face`);
+      this.anims.play(`${playerId}-face`);
     }
   }
 
@@ -68,6 +66,7 @@ export default class Dude extends Character {
           this.isReadyJump = false;
         }
         if (this.animType !== turn && DIRECTION_SETTING[key].turn !== "") {
+          // console.log(turn, this.animType, DIRECTION_SETTING[key].turn, key);
           scene.anims.play(turn, this);
           option.play = turn;
         }
@@ -111,7 +110,6 @@ export default class Dude extends Character {
       frameRate: 10,
       repeat: -1,
     });
-    console.log(scene.anims, "anims");
     this.anims.play(`${this.name}-face`);
   }
   onPointerup(pointer) {

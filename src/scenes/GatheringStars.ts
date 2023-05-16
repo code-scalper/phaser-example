@@ -1,10 +1,10 @@
 import { Scene } from "phaser";
 import { ImageInterface } from "../lib/interfaces";
-import { createSocket, createStarsSocket } from "../socket";
+import { joinUserSocket, createStarsSocket, gameoverSocket } from "../socket";
 
 import { Dude, Platforms, Images, Text, Stars, ScoreText } from "../classes";
 const INITIAL_IMAGES: ImageInterface[] = [
-  { x: 400, y: 300, key: "sky" },
+  { x: 400, y: 300, key: "sky", player: "" },
   //  { x: 400, y: 300, name: "star" },
 ];
 const INITIAL_PLATFORMS = [
@@ -35,7 +35,7 @@ export default class GatheringStarsScene extends Scene {
 
   create(): void {
     this.playerId = this.registry.get("player");
-    createSocket("GatheringStars", this.playerId, this);
+    joinUserSocket("GatheringStars", this.playerId, this);
 
     // this.cameras.main.setBounds(0, 0, 3200, 600).setName("main");
     GatheringStarsScene.group = this.physics.add.group();
@@ -65,7 +65,7 @@ export default class GatheringStarsScene extends Scene {
       200,
       400,
       "GatheringStarsScene",
-      `${this.playerId}Dude`
+      `${this.playerId}`
     );
 
     // events
@@ -85,25 +85,27 @@ export default class GatheringStarsScene extends Scene {
     }
   }
 
-  createScoreText(name) {
-    console.log(this.scoreTexts, "scoretext");
-    const names = {
-      character1Dude: "Namgyu",
-      character2Dude: "Jaewon",
-      character3Dude: "Junwoo",
-      character4Dude: "Jin",
-      character5Dude: "Seyeon",
-    };
-    // score text
-    const scoreTextOption = {
-      prop: `${name}scoreText`,
-      text: `${names[name]}: 0`,
-      x: 16 + 150 * this.scoreTexts.length,
-      y: 16,
-      style: { fontSize: "24px", backgroundColor: "#000" },
-    };
-    const text = new ScoreText(this, scoreTextOption);
-    this.scoreTexts.push(text);
+  updateScore(usersScore) {
+    usersScore.forEach((s, index) => {
+      const { key, label, score } = s;
+      const textName = `${key}ScoreText`;
+      const target = this.scoreTexts.find((text) => {
+        return text.name === textName;
+      });
+      if (target) {
+        target.setText(`${label}: ${score}`);
+      } else {
+        const option = {
+          prop: textName,
+          text: `${label}: ${score}`,
+          x: 16 + 150 * index,
+          y: 16,
+          style: { fontSize: "20px", backgroundColor: "#000" },
+        };
+        const text = new ScoreText(this, option);
+        this.scoreTexts.push(text);
+      }
+    });
   }
 
   joinUser(users) {
@@ -114,7 +116,7 @@ export default class GatheringStarsScene extends Scene {
           200,
           400,
           "GatheringStarsScene",
-          `${user.id}Dude`
+          `${user.id}`
         );
         this.players.push(player);
         this.playerIds.push(user.id);
@@ -124,7 +126,7 @@ export default class GatheringStarsScene extends Scene {
 
   moveCharacter(res) {
     const target = this.players.find((player) => {
-      return player.name === `${res.option.playerId}Dude`;
+      return player.name === `${res.option.playerId}`;
     });
     if (target) {
       target.getUserMove(res.option, target);
@@ -154,4 +156,35 @@ export default class GatheringStarsScene extends Scene {
       this.players.splice(index, 1);
     }
   }
+  gameover(usersScore) {
+    const winner = usersScore.reduce(
+      (acc, cur) => {
+        if (acc.score < cur.score) {
+          acc = { ...cur };
+        }
+        return acc;
+      },
+      { score: 0, key: "", label: "" }
+    );
+    if (winner.key !== "") {
+      const winnerDude = new Dude(
+        this,
+        400,
+        200,
+        "GatheringStarsScene",
+        winner.key
+      );
+      winnerDude.setScale(3).setVelocity(0, 0);
+      const textOption = {
+        prop: "resultText",
+        text: `Winner 👏👏👏 ${winner.label}`,
+        x: 400,
+        y: 300,
+        blink: true,
+        origin: 0.5,
+      };
+      new Text(this, textOption);
+    }
+  }
+  displayUser(users) {}
 }

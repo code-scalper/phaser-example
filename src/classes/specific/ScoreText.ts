@@ -1,11 +1,10 @@
 import { Text } from "../index";
 
 export default class ScoreText extends Text {
-  player = "";
+  scoreText = "";
   constructor(scene, option) {
     super(scene, option);
-    this.player = option.prop;
-    scene.data.set("score", 0);
+    this.scoreText = option.prop;
   }
 
   onPointerup(pointer) {

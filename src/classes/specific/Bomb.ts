@@ -1,6 +1,7 @@
 import GatheringStarsScene from "../../scenes/GatheringStars";
 import TweenHelper from "../../lib/TweenHelper";
-import { hitBombSocket } from "../../socket";
+import { hitBombSocket, gameoverSocket } from "../../socket";
+
 export default class Bomb {
   bombs = [];
   constructor(scene, option, targetGroup, staticGroup) {
@@ -46,7 +47,8 @@ export default class Bomb {
   //   }
   hitBomb(player, bomb, scene) {
     if (scene.players && scene.players.length === 0) {
-      scene.physics.pause();
+      // scene.physics.pause();
+      gameoverSocket();
     }
     player.setTint(0xff0000);
     player.anims.play("right");

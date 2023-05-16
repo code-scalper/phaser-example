@@ -1,19 +1,20 @@
 import { Scene } from "phaser";
 import TweenHelper from "../lib/TweenHelper";
 import { ImageInterface } from "../lib/interfaces";
-// import { createSocket } from "../socket";
+import { checkUserSocket } from "../socket";
 
 const InitialImages: ImageInterface[] = [
-  { x: 200, y: 200, key: "character1" },
-  { x: 400, y: 200, key: "character2" },
-  { x: 600, y: 200, key: "character3" },
-  { x: 300, y: 400, key: "character4" },
-  { x: 500, y: 400, key: "character5" },
+  { x: 200, y: 200, key: "pic_player1", player: "player1" },
+  { x: 400, y: 200, key: "pic_player2", player: "player2" },
+  { x: 600, y: 200, key: "pic_player3", player: "player3" },
+  { x: 300, y: 400, key: "pic_player4", player: "player4" },
+  { x: 500, y: 400, key: "pic_player5", player: "player5" },
 ];
 
 export class SelectCharacter extends Scene {
   // private characters: ImageInterface[];
   private images: any = [];
+  private selectedIds = [];
   constructor() {
     super({
       key: "SelectCharacter",
@@ -34,26 +35,44 @@ export class SelectCharacter extends Scene {
       .setOrigin(0.5);
     TweenHelper.flashElement(this, screenText, 1000);
 
+    checkUserSocket(this);
     // image
     InitialImages.forEach((image): void => {
-      const { x, y, key } = image;
-      this.createImage(x, y, key);
+      const { x, y, key, player } = image;
+      this.createImage(x, y, key, player);
     });
+
     this.input.on("gameobjectdown", (e: any, obj: any) =>
       this.startGame(e, obj)
     );
   }
-
-  startGame(e: any, object: any): void {
-    const { key } = object.texture;
-    if (key) {
-      this.registry.set("player", key);
-      this.scene.start("GatheringStars");
-    }
+  displayUser(users) {
+    const userIds = users.map((user) => user.id);
+    this.images.forEach((image) => {
+      if (userIds.includes(image.name)) {
+        image.setAlpha(0.5).setTint(0xff0000);
+        this.selectedIds.push(image.name);
+      }
+    });
   }
 
-  createImage(centerX: number, centerY: number, name: string): void {
-    const image = this.add.image(centerX, centerY, name).setScale(3);
+  startGame(e: any, object: any): void {
+    if (this.selectedIds.includes(object.name)) return;
+
+    this.registry.set("player", object.name);
+    this.scene.start("GatheringStars");
+  }
+
+  createImage(
+    centerX: number,
+    centerY: number,
+    name: string,
+    player: string
+  ): void {
+    const image = this.add
+      .image(centerX, centerY, name)
+      .setScale(3)
+      .setName(player);
     image.setInteractive();
     this.images.push(image);
   }

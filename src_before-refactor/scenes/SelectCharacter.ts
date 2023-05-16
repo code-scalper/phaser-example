@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 import TweenHelper from "../lib/TweenHelper";
 import { ImageInterface } from "../lib/interfaces";
-import { createSocket } from "../socket";
+import { joinUserSocket } from "../socket";
 
 const InitialImages: ImageInterface[] = [
   { x: 200, y: 200, key: "character1" },
@@ -48,7 +48,7 @@ export class SelectCharacter extends Scene {
   startGame(e: any, object: any): void {
     const { key } = object.texture;
     if (key) {
-      createSocket("gatheringStar", key, key, this);
+      joinUserSocket("gatheringStar", key, key, this);
     }
   }
 

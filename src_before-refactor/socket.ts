@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 const socket = io("http://localhost:3000");
 let user = {};
-let _this = null;
-export const createSocket = (
+let _this: any = {};
+export const joinUserSocket = (
   game: string,
   id: string,
   character: number,

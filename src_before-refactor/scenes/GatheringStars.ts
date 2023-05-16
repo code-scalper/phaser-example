@@ -3,7 +3,7 @@ import { ImageInterface } from "../lib/interfaces";
 import { joinGameRoom, updateGameRoom } from "../socket";
 import TweenHelper from "../lib/TweenHelper";
 const InitialImages: ImageInterface[] = [
-  { x: 400, y: 300, key: "sky" },
+  { x: 400, y: 300, key: "sky", player: "" },
   //  { x: 400, y: 300, name: "star" },
 ];
 const DIRECTION_SETTING: any = {
@@ -216,7 +216,7 @@ export class GatheringStars extends Scene {
     this.players = [];
     users.forEach((user, index) => {
       const player = this.physics.add
-        .sprite(100 + index * 30, 450, `${user.character}Dude`)
+        .sprite(100 + index * 30, 450, `${user.character}`)
         .setName(user.id);
       player.setBounce(0.2);
       player.setCollideWorldBounds(true);
@@ -231,7 +231,7 @@ export class GatheringStars extends Scene {
 
     if (this.player === null) {
       this.player = this.players.find((p) => p.name === this.playerId);
-      this.createAnims(`${this.player.name}Dude`);
+      this.createAnims(`${this.player.name}`);
     }
 
     this.cursors = this.input.keyboard.createCursorKeys();
