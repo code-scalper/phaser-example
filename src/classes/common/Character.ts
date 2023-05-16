@@ -17,6 +17,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
     // this.characterName = name;
     // this.moveSpeed = 200;
+    console.log(name, "create name");
     this.setName(name);
     this.setCollideWorldBounds(true);
     this.body.setOffset(0, 15);

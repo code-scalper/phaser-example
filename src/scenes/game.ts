@@ -19,10 +19,9 @@ export class Game extends Scene {
     const screenText = this.add
       .text(400, 550, "Press any button to play...")
       .setOrigin(0.5);
-    TweenHelper.flashElement(this, screenText);
+    TweenHelper.flashElement(this, screenText, 1000);
   }
-
   setGames(): void {
-    this.scene.start("GatheringStarsScene");
+    this.scene.start("SelectCharacter");
   }
 }

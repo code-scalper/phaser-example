@@ -1,41 +1,15 @@
 export default class TweenHelper {
-    static flashElement(scene, element, repeat = true, easing = 'Linear', overallDuration = 1000, visiblePauseDuration = 300) {
-        if (scene && element) {
-            let flashDuration = overallDuration - visiblePauseDuration / 2;
-
-            scene.tweens.timeline({
-                tweens: [
-                    {
-                        targets: element,
-                        duration: 0,
-                        alpha: 0,
-                        ease: easing
-                    },
-                    {
-                        targets: element,
-                        duration: flashDuration,
-                        alpha: 1,
-                        ease: easing
-                    },
-                    {
-                        targets: element,
-                        duration: visiblePauseDuration,
-                        alpha: 1,
-                        ease: easing
-                    },
-                    {
-                        targets: element,
-                        duration: flashDuration,
-                        alpha: 0,
-                        ease: easing,
-                        onComplete: () => {
-                            if (repeat === true) {
-                                this.flashElement(scene, element);
-                            }
-                        }
-                    }
-                ]
-            });
-        }
+  static flashElement(scene, targets, duration) {
+    targets.setAlpha(0);
+    if (scene && targets) {
+      scene.tweens.add({
+        targets,
+        alpha: 1,
+        ease: "Cubic.easeOut",
+        duration,
+        repeat: -1,
+        yoyo: true,
+      });
     }
+  }
 }

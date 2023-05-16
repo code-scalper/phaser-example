@@ -5,7 +5,7 @@ export default class Text {
     const { prop, x, y, text, isBlink, style = {}, origin = 0 } = option;
     scene[prop] = scene.add.text(x, y, text, { ...style }).setOrigin(origin);
     if (isBlink) {
-      TweenHelper.flashElement(scene, scene[prop]);
+      TweenHelper.flashElement(scene, scene[prop], 1000);
     }
   }
 }

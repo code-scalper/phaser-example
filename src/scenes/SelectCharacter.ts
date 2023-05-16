@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 import TweenHelper from "../lib/TweenHelper";
 import { ImageInterface } from "../lib/interfaces";
-import { createSocket } from "../socket";
+// import { createSocket } from "../socket";
 
 const InitialImages: ImageInterface[] = [
   { x: 200, y: 200, key: "character1" },
@@ -16,7 +16,7 @@ export class SelectCharacter extends Scene {
   private images: any = [];
   constructor() {
     super({
-      key: "selectCharacter",
+      key: "SelectCharacter",
     });
   }
 
@@ -32,14 +32,13 @@ export class SelectCharacter extends Scene {
     const screenText = this.add
       .text(400, 550, "Select Character")
       .setOrigin(0.5);
-    TweenHelper.flashElement(this, screenText);
+    TweenHelper.flashElement(this, screenText, 1000);
 
     // image
     InitialImages.forEach((image): void => {
       const { x, y, key } = image;
       this.createImage(x, y, key);
     });
-    console.log(this.images, "images");
     this.input.on("gameobjectdown", (e: any, obj: any) =>
       this.startGame(e, obj)
     );
@@ -48,12 +47,13 @@ export class SelectCharacter extends Scene {
   startGame(e: any, object: any): void {
     const { key } = object.texture;
     if (key) {
-      createSocket("gatheringStar", key, key, this);
+      this.registry.set("player", key);
+      this.scene.start("GatheringStars");
     }
   }
 
   createImage(centerX: number, centerY: number, name: string): void {
-    const image = this.add.image(centerX, centerY, name);
+    const image = this.add.image(centerX, centerY, name).setScale(3);
     image.setInteractive();
     this.images.push(image);
   }

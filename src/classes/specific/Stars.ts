@@ -1,4 +1,5 @@
 import GatheringStarsScene from "../../scenes/GatheringStars";
+import { Bomb } from "../index";
 export default class Stars {
   constructor(scene, option, staticGroup) {
     const { name, key, repeat, x, y, stepX, stepY } = option;
@@ -29,6 +30,17 @@ export default class Stars {
     scene.data.set("score", score + 10);
     scene.scoreText.setText("Score: " + score);
     star.disableBody(true, true);
+    console.log(star, "star");
+    const x =
+      scene.player.x < 400
+        ? Phaser.Math.Between(400, 800)
+        : Phaser.Math.Between(0, 400);
+    new Bomb(
+      scene,
+      { x, y: 16, name: "bombs", key: "bomb" },
+      scene.bombs,
+      GatheringStarsScene.staticGroup
+    );
 
     // const stars = scene.data.get("stars");
     // if (stars.countActive(true) === 0) {
@@ -37,10 +49,6 @@ export default class Stars {
     //   });
     // }
 
-    // const x =
-    //   player.x < 400
-    //     ? Phaser.Math.Between(400, 800)
-    //     : Phaser.Math.Between(0, 400);
     // const bombs = this.data.get("bombs");
     // const bomb = bombs.create(x, 16, "bomb");
     // bomb.setBounce(1);
