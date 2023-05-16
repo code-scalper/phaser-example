@@ -17,6 +17,8 @@ export default class Dude extends Character {
     this.scene = scene;
     this.name = name;
     this.createAnims(scene, name);
+
+    scene.createScoreText(name);
   }
 
   getUserMove(option, character) {

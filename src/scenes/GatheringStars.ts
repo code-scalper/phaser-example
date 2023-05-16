@@ -26,6 +26,7 @@ export default class GatheringStarsScene extends Scene {
   player;
   players = [];
   bombs;
+  scoreTexts = [];
   constructor() {
     super({
       key: "GatheringStars",
@@ -67,16 +68,6 @@ export default class GatheringStarsScene extends Scene {
       `${this.playerId}Dude`
     );
 
-    // score text
-    const scoreTextOption = {
-      prop: "scoreText",
-      text: "Score: 0",
-      x: 16,
-      y: 16,
-      style: { fontSize: "32px", backgroundColor: "#000" },
-    };
-    new ScoreText(this, scoreTextOption);
-
     // events
     this.input.keyboard.on("keydown", (e: any, obj: any) =>
       this.handlePress(e, obj)
@@ -92,6 +83,27 @@ export default class GatheringStarsScene extends Scene {
     if (e.code === "Space") {
       createStarsSocket();
     }
+  }
+
+  createScoreText(name) {
+    console.log(this.scoreTexts, "scoretext");
+    const names = {
+      character1Dude: "Namgyu",
+      character2Dude: "Jaewon",
+      character3Dude: "Junwoo",
+      character4Dude: "Jin",
+      character5Dude: "Seyeon",
+    };
+    // score text
+    const scoreTextOption = {
+      prop: `${name}scoreText`,
+      text: `${names[name]}: 0`,
+      x: 16 + 150 * this.scoreTexts.length,
+      y: 16,
+      style: { fontSize: "24px", backgroundColor: "#000" },
+    };
+    const text = new ScoreText(this, scoreTextOption);
+    this.scoreTexts.push(text);
   }
 
   joinUser(users) {
