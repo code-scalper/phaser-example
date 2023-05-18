@@ -57,29 +57,27 @@ export default class Dude extends Character {
       jumpCount = 0;
     }
 
-    let keyStatus = {
-      left: false,
-      right: false,
-      up: false,
-      down: false,
-    };
-
     scene.input.keyboard.on("keydown-LEFT", () => {
+      isActive = true;
       this.setVelocityX(-160);
       this.moveState = "left";
-
+      option.velocityX = -160;
       this.anims.play(`${scene.player.name}-left`, true);
     });
 
     scene.input.keyboard.on("keydown-RIGHT", () => {
+      isActive = true;
       this.setVelocityX(160);
       this.moveState = "right";
+      option.velocityX = 160;
       this.anims.play(`${scene.player.name}-right`, true);
     });
 
     scene.input.keyboard.on("keyup-LEFT", () => {
       if (this.moveState === "left") {
+        isActive = false;
         this.setVelocityX(0);
+        option.velocityX = 0;
         this.moveState = "idle_left";
         this.anims.play(`${scene.player.name}-face`);
       }
@@ -87,13 +85,16 @@ export default class Dude extends Character {
 
     scene.input.keyboard.on("keyup-RIGHT", () => {
       if (this.moveState === "right") {
+        isActive = false;
         this.setVelocityX(0);
+        option.velocityX = 0;
         this.moveState = "idle";
         this.anims.play(`${scene.player.name}-face`);
       }
     });
 
     scene.input.keyboard.on("keydown-UP", () => {
+      isActive = true;
       console.log(jumpCount, "jumpCount");
       if (jumpCount === 2 && this.body.touching.down) {
         jumpCount = 0;
