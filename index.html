@@ -10,13 +10,55 @@
     <title>Phaser Boilerplate</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        scrollbar-width: thin;
+      }
+
+      /* Chrome, Edge, and Safari */
+      *::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      *::-webkit-scrollbar-track {
+        background: rgb(29, 8, 104);
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background-color: rgb(63, 31, 175);
+        border: 1px solid rgb(83, 46, 216);
+      }
+    </style>
   </head>
 
   <body>
-    <div
-      class="flex flex-col h-screen justify-center items-center w-full bg-white pt-10"
-    >
-      <div id="game-container"></div>
+    <div class="flex h-screen justify-center items-center w-full bg-white">
+      <div class="w-[300px] h-full bg-indigo-900 p-1 flex flex-col h-full">
+        <div class="flex justify-between items-center">
+          <label for="userName" class="text-white font-bold text-xs"
+            >대화명</label
+          >
+          <input
+            type="text"
+            class="w-[75%] p-1 outline-none bg-indigo-200 text-xs"
+            id="user-name"
+          />
+        </div>
+        <ul
+          id="chat-container"
+          class="h-full p-3 text-white space-y-2 overflow-y-scroll"
+        ></ul>
+        <div class="flex justify-between">
+          <input type="text" class="w-[75%] px-3 outline-none" id="chat" />
+          <button id="chat-submit" class="w-[25%] bg-indigo-600 text-white p-2">
+            전송
+          </button>
+        </div>
+      </div>
+      <div class="w-full h-full bg-indigo-300 flex items-center justify-center">
+        <div id="game-container"></div>
+      </div>
       <script src="app.js"></script>
     </div>
   </body>

@@ -1,12 +1,14 @@
 import { io } from "socket.io-client";
-const ROOM = {
+import { handleChat } from "./chat";
+export const ROOM = {
+  CHAT: "CHAT_ROOM",
   GAME: "GAME_ROOM",
   WAITING: "WAITING_ROOM",
   MOVE: "MOVE_ROOM",
   ITEM: "ITEM_ROOM",
 };
 // action 또는 room 으로 구분해도 되는데 일단 둘다 구분
-const ACTION = {
+export const ACTION = {
   JOIN_USER: "JOIN_USER",
   MOVE_CHARACTER: "MOVE_CHARACTER",
   CREATE_STARS: "CREATE_STARS",
@@ -20,6 +22,11 @@ let socket;
 let option = {};
 let _this = null;
 let target = { count: 0 };
+
+export const joinChatRoom = () => {
+  socket = io("http://localhost:3000");
+  handleChat(socket);
+};
 
 export const joinUserSocket = (game: string, id: string, obj: any) => {
   _this = obj;
@@ -95,7 +102,6 @@ export const updateScoreSocket = (player) => {
   // obj.count = 0;
 };
 export const checkUserSocket = (obj) => {
-  socket = io("http://localhost:3000");
   _this = obj;
   socket.emit(ROOM.WAITING, { action: ACTION.CHECK_USER });
   socket.on(ROOM.WAITING, (res: any) => {

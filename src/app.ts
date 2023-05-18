@@ -4,6 +4,7 @@ import Preload from "./scenes/preload";
 import { Game as GameScene } from "./scenes/game";
 import GatheringStarsScene from "./scenes/GatheringStars";
 import { SelectCharacter } from "./scenes/SelectCharacter";
+import { joinChatRoom } from "./socket";
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "Demo Game",
@@ -17,7 +18,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   backgroundColor: "#333",
   scale: {
-    mode: Phaser.Scale.FIT,
+    mode: Phaser.AUTO,
     parent: "game-container",
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 800,
@@ -31,7 +32,11 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 let GAME = null;
+
+const socketText = "hello";
+
 window.addEventListener("load", () => {
   window["game"] = new Phaser.Game(config);
   GAME = window["game"];
+  joinChatRoom();
 });

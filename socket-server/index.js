@@ -11,6 +11,7 @@ const io = require("socket.io")(http, {
 const port = process.env.PORT || 3000;
 
 const ROOM = {
+  CHAT: "CHAT_ROOM",
   GAME: "GAME_ROOM",
   MOVE: "MOVE_ROOM",
   WAITING: "WAITING_ROOM",
@@ -148,6 +149,10 @@ io.on("connection", (socket) => {
     if (action === ACTION.CHECK_USER) {
       handleCheckUser(option);
     }
+  });
+  socket.on(ROOM.CHAT, (option) => {
+    const { user, message } = option;
+    io.emit(ROOM.CHAT, { user, message });
   });
 
   // socket.on("gameRoom", (option) => {
