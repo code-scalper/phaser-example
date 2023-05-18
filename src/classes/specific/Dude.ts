@@ -12,6 +12,7 @@ export default class Dude extends Character {
   name: string;
   count = 0;
   animType: string = "face";
+  moveState: string;
   constructor(scene, x, y, key, name) {
     super(scene, x, y, key, name);
     this.scene = scene;
@@ -56,68 +57,40 @@ export default class Dude extends Character {
       jumpCount = 0;
     }
 
-    // let keyStatus = {
-    //   left: false,
-    //   right: false,
-    //   up: false,
-    //   down: false,
-    // };
-
-    // this.anims.play(`${scene.player.name}-face`);
-
-    // scene.input.keyboard.on("keydown-LEFT", () => {
-    //   this.setVelocityX(-160);
-    //   this.moveState = "left";
-
-    //   this.anims.play("left", true);
-    // });
-
-    // scene.input.keyboard.on("keydown-RIGHT", () => {
-    //   this.setVelocityX(160);
-    //   this.moveState = "right";
-    //   this.anims.play("right", true);
-    // });
-
-    // scene.input.keyboard.on("keyup-LEFT", () => {
-    //   if (this.moveState === "left") {
-    //     this.setVelocityX(0);
-    //     this.moveState = "idle_left";
-    //     this.anims.play("turn_left", true);
-    //   }
-    // });
-
-    // scene.input.keyboard.on("keyup-RIGHT", () => {
-    //   if (this.moveState === "right") {
-    //     this.setVelocityX(0);
-    //     this.moveState = "idle";
-    //     this.anims.play("turn", true);
-    //   }
-    // });
+    let keyStatus = {
+      left: false,
+      right: false,
+      up: false,
+      down: false,
+    };
 
     scene.input.keyboard.on("keydown-LEFT", () => {
       this.setVelocityX(-160);
-      option.velocityX = 160;
-      this.anims.play(`${option.playerId}-left`, true);
-      option.play = "left";
+      this.moveState = "left";
+
+      this.anims.play(`${scene.player.name}-left`, true);
     });
 
     scene.input.keyboard.on("keydown-RIGHT", () => {
       this.setVelocityX(160);
-      option.velocityX = -160;
-      this.anims.play(`${option.playerId}-right`, true);
-      option.play = "right";
+      this.moveState = "right";
+      this.anims.play(`${scene.player.name}-right`, true);
     });
 
     scene.input.keyboard.on("keyup-LEFT", () => {
-      this.setVelocityX(0);
-      option.velocityX = 0;
-      this.anims.play(`${scene.player.name}-face`);
+      if (this.moveState === "left") {
+        this.setVelocityX(0);
+        this.moveState = "idle_left";
+        this.anims.play(`${scene.player.name}-face`);
+      }
     });
 
     scene.input.keyboard.on("keyup-RIGHT", () => {
-      this.setVelocityX(0);
-      option.velocityX = 0;
-      this.anims.play(`${scene.player.name}-face`);
+      if (this.moveState === "right") {
+        this.setVelocityX(0);
+        this.moveState = "idle";
+        this.anims.play(`${scene.player.name}-face`);
+      }
     });
 
     scene.input.keyboard.on("keydown-UP", () => {
