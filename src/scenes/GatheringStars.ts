@@ -73,11 +73,10 @@ export default class GatheringStarsScene extends Scene {
       this.handlePress(e, obj)
     );
     this.cursors = this.input.keyboard.createCursorKeys();
-  }
-
-  update(): void {
     this.player.getMove(this);
   }
+
+  update(): void {}
   handlePress(e, object) {
     // console.log(e, object);
     if (e.code === "Space") {

@@ -21,6 +21,7 @@ export default class Dude extends Character {
 
   getUserMove(option, character) {
     const { playerId, velocityX, velocityY, play, active } = option;
+
     if (velocityX) {
       character.setVelocityX(velocityX);
     }
@@ -36,8 +37,9 @@ export default class Dude extends Character {
 
   getMove(scene) {
     if (!scene || !scene.cursors || !scene.anims) return;
-    const { down, left, right, up } = scene.cursors;
 
+    const touchingGround = this.body.touching.down;
+    let jumpCount = 0;
     let isActive = false;
     let option = {
       playerId: scene.playerId,
@@ -46,46 +48,91 @@ export default class Dude extends Character {
       play: null,
       active: true,
     };
-    for (const [key, value] of Object.entries({ down, left, right, up })) {
-      const turn = `${scene.player.name}-${DIRECTION_SETTING[key].turn}`;
-      if (value.isDown) {
-        if (DIRECTION_SETTING[key].action === "x") {
-          this.setVelocityX(DIRECTION_SETTING[key].val);
-          option.velocityX = DIRECTION_SETTING[key].val;
-        }
-        if (this.body.touching.down && DIRECTION_SETTING[key].action === "y") {
-          this.jump = 1;
-          this.setVelocityY(DIRECTION_SETTING[key].val);
-          this.isReadyJump = false;
-          option.velocityY = DIRECTION_SETTING[key].val;
-        }
-        if (this.jump === 1 && key === "up" && this.isReadyJump) {
-          this.setVelocityY(DIRECTION_SETTING[key].val);
-          option.velocityY = DIRECTION_SETTING[key].val;
-          this.jump = 0;
-          this.isReadyJump = false;
-        }
-        if (this.animType !== turn && DIRECTION_SETTING[key].turn !== "") {
-          // console.log(turn, this.animType, DIRECTION_SETTING[key].turn, key);
-          scene.anims.play(turn, this);
-          option.play = turn;
-        }
 
-        this.animType = turn;
-        isActive = true;
-      }
-      if (key === "up" && value.isUp) {
-        this.isReadyJump = true;
-      }
-    }
-    if (this.count === 0 && isActive) {
-      this.count = 1;
+    console.log(touchingGround, this.body);
+
+    if (touchingGround) {
+      alert("touchingGround");
+      jumpCount = 0;
     }
 
-    if (isActive === false) {
+    // let keyStatus = {
+    //   left: false,
+    //   right: false,
+    //   up: false,
+    //   down: false,
+    // };
+
+    // this.anims.play(`${scene.player.name}-face`);
+
+    // scene.input.keyboard.on("keydown-LEFT", () => {
+    //   this.setVelocityX(-160);
+    //   this.moveState = "left";
+
+    //   this.anims.play("left", true);
+    // });
+
+    // scene.input.keyboard.on("keydown-RIGHT", () => {
+    //   this.setVelocityX(160);
+    //   this.moveState = "right";
+    //   this.anims.play("right", true);
+    // });
+
+    // scene.input.keyboard.on("keyup-LEFT", () => {
+    //   if (this.moveState === "left") {
+    //     this.setVelocityX(0);
+    //     this.moveState = "idle_left";
+    //     this.anims.play("turn_left", true);
+    //   }
+    // });
+
+    // scene.input.keyboard.on("keyup-RIGHT", () => {
+    //   if (this.moveState === "right") {
+    //     this.setVelocityX(0);
+    //     this.moveState = "idle";
+    //     this.anims.play("turn", true);
+    //   }
+    // });
+
+    scene.input.keyboard.on("keydown-LEFT", () => {
+      this.setVelocityX(-160);
+      option.velocityX = 160;
+      this.anims.play(`${option.playerId}-left`, true);
+      option.play = "left";
+    });
+
+    scene.input.keyboard.on("keydown-RIGHT", () => {
+      this.setVelocityX(160);
+      option.velocityX = -160;
+      this.anims.play(`${option.playerId}-right`, true);
+      option.play = "right";
+    });
+
+    scene.input.keyboard.on("keyup-LEFT", () => {
       this.setVelocityX(0);
+      option.velocityX = 0;
       this.anims.play(`${scene.player.name}-face`);
-    }
+    });
+
+    scene.input.keyboard.on("keyup-RIGHT", () => {
+      this.setVelocityX(0);
+      option.velocityX = 0;
+      this.anims.play(`${scene.player.name}-face`);
+    });
+
+    scene.input.keyboard.on("keydown-UP", () => {
+      console.log(jumpCount, "jumpCount");
+      if (jumpCount === 2 && this.body.touching.down) {
+        jumpCount = 0;
+      }
+      if (jumpCount < 2) {
+        this.setVelocityY(-250);
+
+        option.velocityY = -250;
+        jumpCount++;
+      }
+    });
+
     option.active = isActive;
     moveCharacterSocket(option, this);
   }
