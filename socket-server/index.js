@@ -2,6 +2,7 @@ const app = require("express")();
 const http = require("http").Server(app);
 const cors = require("cors");
 app.use(cors());
+
 const io = require("socket.io")(http, {
   cors: {
     origin: "*",
@@ -100,8 +101,10 @@ const handleJoinUser = (option, connId) => {
 const handleMoveCharacter = (option) => {
   io.emit(ROOM.MOVE, {
     status: "SUCCESS",
-    option,
+    x: option.x,
+    y: option.y,
     action: option.action,
+    playerId: option.playerId,
   });
 };
 
@@ -140,6 +143,13 @@ io.on("connection", (socket) => {
   });
   socket.on(ROOM.MOVE, (option) => {
     handleMoveCharacter(option);
+    // socket.emit(ROOM.MOVE, {
+    //   status: "SUCCESS",
+    //   x: option.x,
+    //   y: option.y,
+    //   action: option.action,
+    //   playerId: option.playerId,
+    // });
   });
   socket.on(ROOM.ITEM, (option) => {
     handleItem(option);

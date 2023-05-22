@@ -1,6 +1,11 @@
 import { Scene } from "phaser";
 import { ImageInterface } from "../lib/interfaces";
-import { joinUserSocket, createStarsSocket, gameoverSocket } from "../socket";
+import {
+  joinUserSocket,
+  createStarsSocket,
+  gameoverSocket,
+  moveCharacterSocket,
+} from "../socket";
 
 import { Dude, Platforms, Images, Text, Stars, ScoreText } from "../classes";
 const INITIAL_IMAGES: ImageInterface[] = [
@@ -76,7 +81,9 @@ export default class GatheringStarsScene extends Scene {
     this.player.getMove(this);
   }
 
-  update(): void {}
+  update(): void {
+    moveCharacterSocket(this);
+  }
   handlePress(e, object) {
     // console.log(e, object);
     if (e.code === "Space") {
@@ -125,10 +132,10 @@ export default class GatheringStarsScene extends Scene {
 
   moveCharacter(res) {
     const target = this.players.find((player) => {
-      return player.name === `${res.option.playerId}`;
+      return player.name === `${res.playerId}`;
     });
     if (target) {
-      target.getUserMove(res.option, target);
+      target.getUserMove(res.x, res.y, target);
     }
     // console.log(target, "move character");
   }

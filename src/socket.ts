@@ -24,7 +24,7 @@ let _this = null;
 let target = { count: 0 };
 
 export const joinChatRoom = () => {
-  socket = io("http://localhost:3000");
+  socket = io("http://172.30.1.48:3000");
   handleChat(socket);
 };
 
@@ -37,6 +37,7 @@ export const joinUserSocket = (game: string, id: string, obj: any) => {
   };
   socket.emit(ROOM.GAME, option);
   socket.on(ROOM.GAME, (res: any) => {
+    console.log(res, "res!!");
     const { status, action } = res;
     if (status === "SUCCESS") {
       if (action === ACTION.JOIN_USER) {
@@ -80,9 +81,14 @@ export const joinUserSocket = (game: string, id: string, obj: any) => {
   });
 };
 
-export const moveCharacterSocket = (option, obj) => {
+export const moveCharacterSocket = (obj) => {
   target = obj;
-  option.action = ACTION.MOVE_CHARACTER;
+  const option = {
+    action: ACTION.MOVE_CHARACTER,
+    playerId: obj.player.name,
+    x: obj.player.x,
+    y: obj.player.y,
+  };
   socket.emit(ROOM.MOVE, option);
   // obj.count = 0;
 };

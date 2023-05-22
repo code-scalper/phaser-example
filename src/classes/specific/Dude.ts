@@ -20,20 +20,12 @@ export default class Dude extends Character {
     this.createAnims(scene, name);
   }
 
-  getUserMove(option, character) {
-    const { playerId, velocityX, velocityY, play, active } = option;
+  getUserMove(x, y, character) {
+    character.setPosition(x, y);
 
-    if (velocityX) {
-      character.setVelocityX(velocityX);
-    }
-
-    if (velocityY) {
-      character.setVelocityY(velocityY);
-    }
-    if (!active) {
-      character.setVelocityX(0);
-      this.anims.play(`${playerId}-face`);
-    }
+    // if (!active) {
+    //   this.anims.play(`${character.name}-face`);
+    // }
   }
 
   getMove(scene) {
@@ -44,71 +36,55 @@ export default class Dude extends Character {
     let isActive = false;
     let option = {
       playerId: scene.playerId,
-      velocityX: null,
-      velocityY: null,
-      play: null,
-      active: true,
+      x: null,
+      y: null,
     };
 
-    console.log(touchingGround, this.body);
-
-    if (touchingGround) {
-      alert("touchingGround");
-      jumpCount = 0;
-    }
-
     scene.input.keyboard.on("keydown-LEFT", () => {
-      isActive = true;
       this.setVelocityX(-160);
       this.moveState = "left";
-      option.velocityX = -160;
+
       this.anims.play(`${scene.player.name}-left`, true);
+      //  moveCharacterSocket(option, this);
     });
 
     scene.input.keyboard.on("keydown-RIGHT", () => {
-      isActive = true;
       this.setVelocityX(160);
       this.moveState = "right";
-      option.velocityX = 160;
+
       this.anims.play(`${scene.player.name}-right`, true);
+      //  moveCharacterSocket(option, this);
     });
 
     scene.input.keyboard.on("keyup-LEFT", () => {
       if (this.moveState === "left") {
-        isActive = false;
         this.setVelocityX(0);
-        option.velocityX = 0;
+
         this.moveState = "idle_left";
         this.anims.play(`${scene.player.name}-face`);
       }
+      //  moveCharacterSocket(option, this);
     });
 
     scene.input.keyboard.on("keyup-RIGHT", () => {
       if (this.moveState === "right") {
-        isActive = false;
         this.setVelocityX(0);
-        option.velocityX = 0;
         this.moveState = "idle";
         this.anims.play(`${scene.player.name}-face`);
       }
+      // moveCharacterSocket(option, this);
     });
 
     scene.input.keyboard.on("keydown-UP", () => {
-      isActive = true;
-      console.log(jumpCount, "jumpCount");
       if (jumpCount === 2 && this.body.touching.down) {
         jumpCount = 0;
       }
       if (jumpCount < 2) {
         this.setVelocityY(-250);
-
-        option.velocityY = -250;
         jumpCount++;
       }
+      //  moveCharacterSocket(option, this);
     });
-
-    option.active = isActive;
-    moveCharacterSocket(option, this);
   }
 
   createAnims(scene, name: string): void {
